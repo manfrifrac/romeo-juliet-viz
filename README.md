@@ -32,6 +32,15 @@ Apri [http://localhost:8080](http://localhost:8080) nel browser.
 2. Vai su [vercel.com](https://vercel.com) → **Add New** → **Project**
 3. Importa il repo GitHub → **Deploy**
 
+## Auto-deploy: collega GitHub a Vercel
+
+Per far sì che ogni `git push` aggiorni automaticamente Vercel:
+
+1. Accedi a [Vercel](https://vercel.com)
+2. Apri **[Impostazioni Git del progetto](https://vercel.com/manfrifracs-projects/romeo-juliet-viz/settings/git)**
+3. Clicca **Connect Git Repository**
+4. Scegli **GitHub** → autorizza se richiesto → seleziona **manfrifrac/romeo-juliet-viz**
+
 ## Push su GitHub
 
 **Opzione A – GitHub CLI**
