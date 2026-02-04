@@ -327,6 +327,12 @@ async function init() {
   buildConnections();
   statusEl.textContent = `${romeoPositions.length} Romeo, ${julietPositions.length} Juliet, ${connections.length.toLocaleString()} linee`;
 
+  // aggiorna il testo delle occorrenze nello splash (se presente)
+  const countsEl = document.getElementById("countsText");
+  if (countsEl) {
+    countsEl.textContent = `${romeoPositions.length} occurrences of “Romeo” and ${julietPositions.length} of “Juliet”.`;
+  }
+
   render();
 
   btnPlay.disabled = false;
