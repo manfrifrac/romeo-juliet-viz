@@ -292,15 +292,12 @@ async function init() {
     return;
   }
 
-  // dimensioni affidabili per mobile (viewport + fallback)
-  const vw = window.visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
-  const vh = window.visualViewport?.height ?? window.innerHeight;
+  // usa sempre il viewport così su mobile non si stringe (container può essere 0 o sbagliato al primo paint)
   const toolbarHeight = 52;
-  const container = document.getElementById("container");
-  canvasWidth = (container && container.clientWidth > 0) ? container.clientWidth : vw;
-  canvasHeight = (container && container.clientHeight > 0) ? container.clientHeight : Math.max(300, vh - toolbarHeight);
-  if (canvasWidth <= 0) canvasWidth = Math.max(280, vw);
-  if (canvasHeight <= 0) canvasHeight = Math.max(400, vh - toolbarHeight);
+  const vw = window.visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
+  const vh = window.visualViewport?.height ?? window.innerHeight ?? document.documentElement.clientHeight;
+  canvasWidth = Math.max(280, Math.floor(vw));
+  canvasHeight = Math.max(400, Math.floor(vh - toolbarHeight));
   // su schermi stretti (mobile) testo un po' più grande per leggibilità
   fontScale = Math.max(1, Math.min(1.4, 480 / canvasWidth));
 
