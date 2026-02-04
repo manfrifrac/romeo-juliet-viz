@@ -7,10 +7,11 @@
 let canvasWidth = 1080;
 let canvasHeight = 1920;
 const BASE_ANIMATION_DURATION_MS = 15000; // durata standard 15 secondi
-const FONT_SIZE = 5;
-const LINE_HEIGHT = 7;
-const PADDING = 40;
-const TEXT_COLOR = "#555555";
+const BASE_FONT_SIZE = 5;
+const BASE_LINE_HEIGHT = 7;
+const PADDING = 24;
+let fontScale = 1; // adattato in init() per mobile
+const TEXT_COLOR = "#333333";
 const LINE_COLOR = "#cc0000";
 const LINE_OPACITY = 0.4;
 
@@ -69,21 +70,23 @@ function tokenize(text) {
 function layoutWords(text) {
   const tokens = tokenize(text);
   const result = [];
+  const fontSize = Math.round(BASE_FONT_SIZE * fontScale);
+  const lineHeight = Math.round(BASE_LINE_HEIGHT * fontScale);
   const maxWidth = canvasWidth - PADDING * 2;
   let x = PADDING;
-  let y = PADDING + LINE_HEIGHT;
-  ctx.font = `${FONT_SIZE}px "Times New Roman", "Georgia", serif`;
+  let y = PADDING + lineHeight;
+  ctx.font = `${fontSize}px "Times New Roman", "Georgia", serif`;
 
   for (const word of tokens) {
     const m = ctx.measureText(word + " ");
     const w = m.width;
     if (x + w > maxWidth && x > PADDING) {
       x = PADDING;
-      y += LINE_HEIGHT;
+      y += lineHeight;
     }
     const wordW = ctx.measureText(word).width;
     const cx = x + wordW / 2;
-    const cy = y - FONT_SIZE / 2;
+    const cy = y - fontSize / 2;
     result.push({
       word,
       x,
@@ -94,7 +97,7 @@ function layoutWords(text) {
     });
     x += w;
   }
-  return { words: result, maxY: y };
+  return { words: result, maxY: y, fontSize, lineHeight };
 }
 
 function buildConnections() {
@@ -122,7 +125,8 @@ function buildConnections() {
 
 function drawText() {
   ctx.fillStyle = TEXT_COLOR;
-  ctx.font = `${FONT_SIZE * contentScale}px "Times New Roman", "Georgia", serif`;
+  const fs = Math.max(1, Math.round(BASE_FONT_SIZE * fontScale * contentScale));
+  ctx.font = `${fs}px "Times New Roman", "Georgia", serif`;
   for (const w of words) {
     ctx.fillText(w.word, w.x, w.y);
   }
@@ -288,18 +292,26 @@ async function init() {
     return;
   }
 
-  // adatta il canvas alle dimensioni dello schermo
+  // dimensioni affidabili per mobile (viewport + fallback)
+  const vw = window.visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
+  const vh = window.visualViewport?.height ?? window.innerHeight;
+  const toolbarHeight = 52;
   const container = document.getElementById("container");
-  if (container) {
-    canvasWidth = container.clientWidth;
-    canvasHeight = container.clientHeight;
-  }
+  canvasWidth = (container && container.clientWidth > 0) ? container.clientWidth : vw;
+  canvasHeight = (container && container.clientHeight > 0) ? container.clientHeight : Math.max(300, vh - toolbarHeight);
+  if (canvasWidth <= 0) canvasWidth = Math.max(280, vw);
+  if (canvasHeight <= 0) canvasHeight = Math.max(400, vh - toolbarHeight);
+  // su schermi stretti (mobile) testo un po' più grande per leggibilità
+  fontScale = Math.max(1, Math.min(1.4, 480 / canvasWidth));
+
   // canvas ad alta definizione per evitare sfocatura su mobile
-  dpr = window.devicePixelRatio || 1;
+  dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   canvas.width = canvasWidth * dpr;
   canvas.height = canvasHeight * dpr;
   canvas.style.width = canvasWidth + "px";
   canvas.style.height = canvasHeight + "px";
+  canvas.style.maxWidth = "100%";
+  canvas.style.maxHeight = "100%";
   statusEl.textContent = "Layout parole...";
   const layoutResult = layoutWords(text);
   words = layoutResult.words;

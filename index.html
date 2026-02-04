@@ -90,6 +90,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      width: 100%;
+      box-sizing: border-box;
     }
     #canvas-wrapper {
       width: 100%;
@@ -103,11 +105,12 @@
     canvas {
       display: block;
       background: #fff;
+      width: 100%;
+      height: 100%;
       max-width: 100%;
-      max-height: calc(100vh - 52px);
-      width: auto;
-      height: auto;
+      max-height: 100%;
       object-fit: contain;
+      touch-action: manipulation;
     }
     #title-slide {
       position: fixed;
