@@ -25,7 +25,7 @@
       min-height: 100vh;
       overflow-y: auto;
     }
-    /* Durante l'animazione mostriamo solo i pulsanti di zoom in basso a destra */
+    /* Durante l'animazione mostriamo controlli compatti in basso a destra */
     body.no-toolbar #toolbar {
       top: auto;
       bottom: 16px;
@@ -34,6 +34,7 @@
       padding: 0;
       background: transparent;
       box-shadow: none;
+      gap: 6px;
     }
     #toolbar {
       position: fixed;
@@ -48,17 +49,16 @@
       align-items: center;
       z-index: 100;
     }
-    body.no-toolbar #toolbar button,
-    body.no-toolbar #toolbar span {
+    body.no-toolbar #toolbar #btnRecord,
+    body.no-toolbar #toolbar #status {
       display: none;
     }
-    body.no-toolbar #toolbar #btnZoomIn,
-    body.no-toolbar #toolbar #btnZoomOut {
-      display: inline-block;
-      padding: 10px 14px;
+    body.no-toolbar #toolbar button {
+      padding: 8px 10px;
       border-radius: 999px;
       margin-left: 4px;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.9);
+      font-size: 12px;
     }
     button {
       padding: 10px 18px;
