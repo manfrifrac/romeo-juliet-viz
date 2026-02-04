@@ -6,7 +6,7 @@
 // 9:16 formato verticale telefono
 const CANVAS_WIDTH = 1080;
 const CANVAS_HEIGHT = 1920;
-const BASE_ANIMATION_DURATION_MS = 30000; // durata standard 30 secondi
+const BASE_ANIMATION_DURATION_MS = 15000; // durata standard 15 secondi
 const FONT_SIZE = 4;
 const LINE_HEIGHT = 6;
 const PADDING = 40;
@@ -152,13 +152,15 @@ function animate() {
   const total = connections.length;
   if (total === 0) return;
   const elapsed = performance.now() - animationStartTime;
-  const progress = Math.min(elapsed / animationDurationMs, 1);
-  animationIndex = Math.floor(progress * total);
+  const linear = Math.min(elapsed / animationDurationMs, 1);
+  // ease-in: partenza lenta, poi accelera (quadratico)
+  const eased = linear * linear;
+  animationIndex = Math.floor(eased * total);
   render();
   const sec = Math.floor(elapsed / 1000);
   const totalSec = Math.round(animationDurationMs / 1000);
   statusEl.textContent = `${animationIndex.toLocaleString()} / ${total.toLocaleString()} linee · ${sec}s / ${totalSec}s`;
-  if (progress >= 1) {
+  if (linear >= 1) {
     animationRunning = false;
     btnPlay.disabled = false;
     btnPause.disabled = true;
