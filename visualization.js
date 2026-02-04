@@ -31,6 +31,7 @@ let zoomLevel = 1;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 10;
 let dpr = window.devicePixelRatio || 1;
+let internalDpr = dpr * MAX_ZOOM;
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -43,13 +44,9 @@ const btnZoomOut = document.getElementById("btnZoomOut");
 const statusEl = document.getElementById("status");
 
 function applyZoom() {
-  // ridisegna il canvas ad alta risoluzione per lo zoom scelto
-  const scaledDpr = dpr * zoomLevel;
-  canvas.width = CANVAS_WIDTH * scaledDpr;
-  canvas.height = CANVAS_HEIGHT * scaledDpr;
-  canvas.style.width = CANVAS_WIDTH + "px";
-  canvas.style.height = CANVAS_HEIGHT + "px";
-  ctx.setTransform(scaledDpr, 0, 0, scaledDpr, 0, 0);
+  // usa una risoluzione interna molto alta e scala solo la trasformazione
+  const scale = dpr * zoomLevel;
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
   render();
 }
 
@@ -291,6 +288,11 @@ async function init() {
 
   // canvas ad alta definizione per evitare sfocatura su mobile
   dpr = window.devicePixelRatio || 1;
+  internalDpr = dpr * MAX_ZOOM;
+  canvas.width = CANVAS_WIDTH * internalDpr;
+  canvas.height = CANVAS_HEIGHT * internalDpr; // fissi 9:16 per video verticale
+  canvas.style.width = CANVAS_WIDTH + "px";
+  canvas.style.height = CANVAS_HEIGHT + "px";
   statusEl.textContent = "Layout parole...";
   const layoutResult = layoutWords(text);
   words = layoutResult.words;
