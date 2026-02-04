@@ -29,7 +29,7 @@ let recordedChunks = [];
 let contentScale = 1;
 let zoomLevel = 1;
 const MIN_ZOOM = 1;
-const MAX_ZOOM = 12;
+const MAX_ZOOM = 16;
 let dpr = window.devicePixelRatio || 1;
 
 const canvas = document.getElementById("canvas");
@@ -43,21 +43,9 @@ const btnZoomOut = document.getElementById("btnZoomOut");
 const statusEl = document.getElementById("status");
 
 function applyZoom() {
-  // bilancia: parte di zoom con pixel reali, parte con CSS
-  const internalScale = Math.min(zoomLevel, 2); // mai più di 2x di ridisegno
-  const displayScale = zoomLevel / internalScale;
-
-  const scaledDpr = dpr * internalScale;
-  canvas.width = CANVAS_WIDTH * scaledDpr;
-  canvas.height = CANVAS_HEIGHT * scaledDpr;
-  canvas.style.width = CANVAS_WIDTH + "px";
-  canvas.style.height = CANVAS_HEIGHT + "px";
-
+  // zoom ottico via CSS, canvas resta ad alta risoluzione dpr
   canvas.style.transformOrigin = "center center";
-  canvas.style.transform = `scale(${displayScale})`;
-
-  ctx.setTransform(scaledDpr, 0, 0, scaledDpr, 0, 0);
-  render();
+  canvas.style.transform = `scale(${zoomLevel})`;
 }
 
 function normalizeWord(w) {
@@ -298,6 +286,10 @@ async function init() {
 
   // canvas ad alta definizione per evitare sfocatura su mobile
   dpr = window.devicePixelRatio || 1;
+  canvas.width = CANVAS_WIDTH * dpr;
+  canvas.height = CANVAS_HEIGHT * dpr; // fissi 9:16 per video verticale
+  canvas.style.width = CANVAS_WIDTH + "px";
+  canvas.style.height = CANVAS_HEIGHT + "px";
   statusEl.textContent = "Layout parole...";
   const layoutResult = layoutWords(text);
   words = layoutResult.words;
@@ -343,6 +335,8 @@ async function init() {
 
   // applica lo zoom iniziale (1x) e disegna
   applyZoom();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  render();
 
   btnPlay.disabled = false;
   btnPause.disabled = true;
