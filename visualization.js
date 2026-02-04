@@ -29,9 +29,8 @@ let recordedChunks = [];
 let contentScale = 1;
 let zoomLevel = 1;
 const MIN_ZOOM = 1;
-const MAX_ZOOM = 10;
+const MAX_ZOOM = 8;
 let dpr = window.devicePixelRatio || 1;
-let internalDpr = dpr * MAX_ZOOM;
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -44,10 +43,9 @@ const btnZoomOut = document.getElementById("btnZoomOut");
 const statusEl = document.getElementById("status");
 
 function applyZoom() {
-  // usa una risoluzione interna molto alta e scala solo la trasformazione
-  const scale = dpr * zoomLevel;
-  ctx.setTransform(scale, 0, 0, scale, 0, 0);
-  render();
+  // zoom ottico via CSS, canvas resta ad alta risoluzione dpr
+  canvas.style.transformOrigin = "center center";
+  canvas.style.transform = `scale(${zoomLevel})`;
 }
 
 function normalizeWord(w) {
@@ -288,9 +286,8 @@ async function init() {
 
   // canvas ad alta definizione per evitare sfocatura su mobile
   dpr = window.devicePixelRatio || 1;
-  internalDpr = dpr * MAX_ZOOM;
-  canvas.width = CANVAS_WIDTH * internalDpr;
-  canvas.height = CANVAS_HEIGHT * internalDpr; // fissi 9:16 per video verticale
+  canvas.width = CANVAS_WIDTH * dpr;
+  canvas.height = CANVAS_HEIGHT * dpr; // fissi 9:16 per video verticale
   canvas.style.width = CANVAS_WIDTH + "px";
   canvas.style.height = CANVAS_HEIGHT + "px";
   statusEl.textContent = "Layout parole...";
@@ -336,9 +333,9 @@ async function init() {
     countsEl.textContent = `${romeoPositions.length} occurrences of “Romeo” and ${julietPositions.length} of “Juliet”.`;
   }
 
-  // applica lo zoom iniziale ad alta definizione
+  // applica lo zoom iniziale (1x) e disegna
   applyZoom();
-
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   render();
 
   btnPlay.disabled = false;
