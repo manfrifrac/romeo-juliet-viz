@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=10.0, user-scalable=yes">
   <title>Romeo and Juliet – Visualization</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -100,13 +100,46 @@
       margin-bottom: 24px;
       text-align: center;
     }
+    #title-slide h2 {
+      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      font-weight: 400;
+      margin-bottom: 12px;
+      text-align: center;
+      color: #f5f5f5;
+    }
     #title-slide p {
       font-size: clamp(1rem, 3vw, 1.4rem);
       color: #999;
       text-align: center;
-      max-width: 400px;
+      max-width: 420px;
       line-height: 1.6;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
+    }
+    #title-slide .details {
+      font-size: 0.9rem;
+      color: #bbbbbb;
+      max-width: 420px;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+    #title-slide .details span.label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+      color: #777;
+      display: block;
+      margin-bottom: 8px;
+    }
+    #title-slide .inspiration {
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: #666;
+      text-align: center;
+    }
+    #title-slide .inspiration a {
+      color: #999;
+      text-decoration: underline;
     }
     #title-slide .btn-start {
       padding: 16px 48px;
@@ -141,16 +174,24 @@
 <body>
   <div id="title-slide">
     <h1>Romeo and Juliet</h1>
+    <h2>A dense web of encounters</h2>
     <p>
-      Inspired by Beetroot Design’s
-      “Romeo &amp; Juliet” poster
-      (<a href="https://www.behance.net/gallery/12000833/Romeo-Juliet" target="_blank" rel="noopener noreferrer">Behance project</a>):
-      every occurrence of “Romeo” in Shakespeare’s play is connected to every
-      occurrence of “Juliet” by ultra-thin red lines. The lines appear in a
-      random order each time and, when you zoom in, you can see the full web
-      of connections between the two names.
+      Every time the names “Romeo” and “Juliet” appear in Shakespeare’s play,
+      they are connected by an ultra-thin red line. The more you zoom into the
+      text, the more individual relations between the two lovers are revealed.
     </p>
+    <div class="details">
+      <span class="label">How it works</span>
+      Each occurrence of “Romeo” is linked to every occurrence of “Juliet”.
+      The lines are drawn in a different random order every time, inviting you
+      to explore the text as a living network instead of a static page.
+    </div>
     <button class="btn-start" id="btnStart" disabled>Loading...</button>
+    <div class="inspiration">
+      Inspired by Beetroot Design’s
+      “Romeo &amp; Juliet” poster on
+      <a href="https://www.behance.net/gallery/12000833/Romeo-Juliet" target="_blank" rel="noopener noreferrer">Behance</a>.
+    </div>
   </div>
   <div id="toolbar">
     <button id="btnPlay" disabled>Play</button>
