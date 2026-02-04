@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Romeo e Giulietta – Visualizzazione</title>
+  <title>Romeo and Juliet – Visualization</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -11,7 +11,7 @@
       background: #1a1a1a;
       color: #eee;
       min-height: 100vh;
-      overflow: hidden;
+      overflow-y: auto;
     }
     #toolbar {
       position: fixed;
@@ -21,18 +21,19 @@
       padding: 12px 20px;
       background: rgba(0,0,0,0.8);
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       align-items: center;
       z-index: 100;
     }
     button {
-      padding: 8px 16px;
+      padding: 10px 18px;
       border: 1px solid #555;
       background: #333;
       color: #eee;
       cursor: pointer;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 15px;
     }
     button:hover { background: #444; }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -40,7 +41,9 @@
     #status {
       font-size: 13px;
       color: #aaa;
-      margin-left: auto;
+      margin-left: 0;
+      flex-basis: 100%;
+      margin-top: 4px;
     }
     #container {
       position: fixed;
@@ -110,20 +113,31 @@
       opacity: 0.6;
       cursor: wait;
     }
+
+    @media (min-width: 640px) {
+      #toolbar {
+        flex-wrap: nowrap;
+      }
+      #status {
+        margin-left: auto;
+        flex-basis: auto;
+        margin-top: 0;
+      }
+    }
   </style>
 </head>
 <body>
   <div id="title-slide">
-    <h1>Romeo e Giulietta</h1>
-    <p>Le linee rosse collegano ogni Romeo con ogni Giulietta nell'opera di Shakespeare – il primo con l'ultimo, il secondo con il penultimo, e così via.</p>
-    <button class="btn-start" id="btnStart" disabled>Caricamento...</button>
+    <h1>Romeo and Juliet</h1>
+    <p>The red lines connect every Romeo with every Juliet in Shakespeare's play – the first with the last, the second with the second to last, and so on.</p>
+    <button class="btn-start" id="btnStart" disabled>Loading...</button>
   </div>
   <div id="toolbar">
     <button id="btnPlay" disabled>Play</button>
     <button id="btnPause" disabled>Pause</button>
     <button id="btnReset" disabled>Reset</button>
-    <button id="btnRecord" disabled>Registra video</button>
-    <span id="status">Caricamento...</span>
+    <button id="btnRecord" disabled>Record video</button>
+    <span id="status">Loading...</span>
   </div>
   <div id="container">
     <div id="canvas-wrapper">
