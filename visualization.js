@@ -7,10 +7,10 @@
 const CANVAS_WIDTH = 1080;
 const CANVAS_HEIGHT = 1920;
 const BASE_ANIMATION_DURATION_MS = 15000; // durata standard 15 secondi
-const FONT_SIZE = 4;
-const LINE_HEIGHT = 6;
+const FONT_SIZE = 5;
+const LINE_HEIGHT = 7;
 const PADDING = 40;
-const TEXT_COLOR = "#999999";
+const TEXT_COLOR = "#555555";
 const LINE_COLOR = "#cc0000";
 const LINE_OPACITY = 0.4;
 
@@ -29,7 +29,7 @@ let recordedChunks = [];
 let contentScale = 1;
 let zoomLevel = 1;
 const MIN_ZOOM = 1;
-const MAX_ZOOM = 8;
+const MAX_ZOOM = 16;
 let dpr = window.devicePixelRatio || 1;
 
 const canvas = document.getElementById("canvas");
