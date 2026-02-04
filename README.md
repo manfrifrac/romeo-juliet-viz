@@ -1,6 +1,8 @@
 # Romeo e Giulietta – Visualizzazione interattiva
 
-Visualizzazione dell'opera di Shakespeare con linee rosse che collegano ogni istanza di "Romeo" con ogni istanza di "Juliet", come nell'artwork originale (~55.440 linee).
+Visualizzazione dell'opera di Shakespeare con linee rosse che collegano ogni "Romeo" con ogni "Juliet" – primo con ultimo, secondo con penultimo, e così via – ordine di apparizione casuale.
+
+**[Live su Vercel](https://romeo-juliet-viz.vercel.app)** (dopo il deploy)
 
 ## Come usare
 
@@ -23,6 +25,20 @@ Apri [http://localhost:8080](http://localhost:8080) nel browser.
 - **Pause**: mette in pausa
 - **Reset**: riparte da zero
 - **Registra video**: registra l'animazione come file WebM (premere di nuovo per fermare e scaricare)
+
+## Deploy su Vercel
+
+1. Crea un repo GitHub e pusha il codice (vedi sotto)
+2. Vai su [vercel.com](https://vercel.com) → **Add New** → **Project**
+3. Importa il repo GitHub → **Deploy**
+
+## Push su GitHub
+
+```powershell
+gh auth login   # una tantum, se non sei loggato
+cd "c:\Users\utente\ROMEO book"
+gh repo create romeo-juliet-viz --public --source=. --remote=origin --push
+```
 
 ## Struttura
 
