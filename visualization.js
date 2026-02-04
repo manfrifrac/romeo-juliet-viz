@@ -58,7 +58,7 @@ function layoutWords(text) {
   const maxWidth = CANVAS_WIDTH - PADDING * 2;
   let x = PADDING;
   let y = PADDING + LINE_HEIGHT;
-  ctx.font = `${FONT_SIZE}px sans-serif`;
+  ctx.font = `${FONT_SIZE}px "Times New Roman", "Georgia", serif`;
 
   for (const word of tokens) {
     const m = ctx.measureText(word + " ");
@@ -104,7 +104,7 @@ function buildConnections() {
 
 function drawText() {
   ctx.fillStyle = TEXT_COLOR;
-  ctx.font = `${FONT_SIZE * contentScale}px sans-serif`;
+  ctx.font = `${FONT_SIZE * contentScale}px "Times New Roman", "Georgia", serif`;
   for (const w of words) {
     ctx.fillText(w.word, w.x, w.y);
   }
