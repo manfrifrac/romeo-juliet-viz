@@ -133,7 +133,7 @@
       max-width: 420px;
       text-align: center;
       line-height: 1.5;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
     #title-slide .details span.label {
       text-transform: uppercase;
@@ -152,6 +152,15 @@
     #title-slide .inspiration a {
       color: #999;
       text-decoration: underline;
+    }
+    #title-slide .credits {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: #777;
+      text-align: center;
     }
     #title-slide .btn-start {
       padding: 16px 48px;
@@ -198,17 +207,42 @@
       The lines are drawn in a different random order every time, inviting you
       to explore the text as a living network instead of a static page.
     </div>
+    <div class="details">
+      <span class="label">Animation &amp; story</span>
+      <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+        <label style="font-size:0.85rem; color:#bbbbbb;">
+          Speed:
+          <select id="speedSelect" style="margin-left:6px; padding:4px 8px; font-size:0.85rem; border-radius:4px; border:1px solid #555; background:#111; color:#eee;">
+            <option value="slow">Slow · lingering (60s)</option>
+            <option value="normal" selected>Standard (30s)</option>
+            <option value="fast">Fast · heartbeat (15s)</option>
+          </select>
+        </label>
+        <label style="font-size:0.85rem; color:#bbbbbb;">
+          Story:
+          <select id="storySelect" style="margin-left:6px; padding:4px 8px; font-size:0.85rem; border-radius:4px; border:1px solid #555; background:#111; color:#eee;">
+            <option value="random" selected>Storm of connections</option>
+            <option value="chronological">From first to last scene</option>
+          </select>
+        </label>
+      </div>
+    </div>
     <button class="btn-start" id="btnStart" disabled>Loading...</button>
     <div class="inspiration">
       Inspired by Beetroot Design’s
       “Romeo &amp; Juliet” poster on
       <a href="https://www.behance.net/gallery/12000833/Romeo-Juliet" target="_blank" rel="noopener noreferrer">Behance</a>.
     </div>
+    <div class="credits">
+      Opera realizzata da Manfredo – Instagram @dino_ebbasta
+    </div>
   </div>
   <div id="toolbar">
     <button id="btnPlay" disabled>Play</button>
     <button id="btnPause" disabled>Pause</button>
     <button id="btnReset" disabled>Reset</button>
+    <button id="btnZoomIn" disabled>Zoom +</button>
+    <button id="btnZoomOut" disabled>Zoom −</button>
     <button id="btnRecord" disabled>Record video</button>
     <span id="status">Loading...</span>
   </div>

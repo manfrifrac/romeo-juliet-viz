@@ -6,7 +6,7 @@
 // 9:16 formato verticale telefono
 const CANVAS_WIDTH = 1080;
 const CANVAS_HEIGHT = 1920;
-const ANIMATION_DURATION_MS = 30000; // 30 secondi
+const BASE_ANIMATION_DURATION_MS = 30000; // durata standard 30 secondi
 const FONT_SIZE = 4;
 const LINE_HEIGHT = 6;
 const PADDING = 40;
@@ -22,9 +22,14 @@ let animationIndex = 0;
 let animationRunning = false;
 let animationFrameId = null;
 let animationStartTime = 0;
+let animationDurationMs = BASE_ANIMATION_DURATION_MS;
+let storyMode = "random"; // "random" oppure "chronological"
 let mediaRecorder = null;
 let recordedChunks = [];
 let contentScale = 1;
+let zoomLevel = 1;
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 12;
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -32,7 +37,14 @@ const btnPlay = document.getElementById("btnPlay");
 const btnPause = document.getElementById("btnPause");
 const btnReset = document.getElementById("btnReset");
 const btnRecord = document.getElementById("btnRecord");
+const btnZoomIn = document.getElementById("btnZoomIn");
+const btnZoomOut = document.getElementById("btnZoomOut");
 const statusEl = document.getElementById("status");
+
+function applyZoom() {
+  canvas.style.transformOrigin = "center center";
+  canvas.style.transform = `scale(${zoomLevel})`;
+}
 
 function normalizeWord(w) {
   return w.replace(/[^\w]/g, "").toLowerCase();
@@ -95,10 +107,14 @@ function buildConnections() {
       connections.push({ from, to });
     }
   }
-  // ordine casuale di apparizione delle linee
-  for (let i = connections.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [connections[i], connections[j]] = [connections[j], connections[i]];
+  // ordine di apparizione delle linee:
+  // - "random": web caotico, come innamoramento improvviso
+  // - "chronological": dal primo incontro all'ultima scena
+  if (storyMode === "random") {
+    for (let i = connections.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [connections[i], connections[j]] = [connections[j], connections[i]];
+    }
   }
 }
 
@@ -136,11 +152,12 @@ function animate() {
   const total = connections.length;
   if (total === 0) return;
   const elapsed = performance.now() - animationStartTime;
-  const progress = Math.min(elapsed / ANIMATION_DURATION_MS, 1);
+  const progress = Math.min(elapsed / animationDurationMs, 1);
   animationIndex = Math.floor(progress * total);
   render();
   const sec = Math.floor(elapsed / 1000);
-  statusEl.textContent = `${animationIndex.toLocaleString()} / ${total.toLocaleString()} linee · ${sec}s / 30s`;
+  const totalSec = Math.round(animationDurationMs / 1000);
+  statusEl.textContent = `${animationIndex.toLocaleString()} / ${total.toLocaleString()} linee · ${sec}s / ${totalSec}s`;
   if (progress >= 1) {
     animationRunning = false;
     btnPlay.disabled = false;
@@ -156,7 +173,7 @@ function startAnimation() {
     animationIndex = 0;
   }
   animationRunning = true;
-  animationStartTime = performance.now() - (animationIndex / connections.length) * ANIMATION_DURATION_MS;
+  animationStartTime = performance.now() - (animationIndex / connections.length) * animationDurationMs;
   btnPlay.disabled = true;
   btnPause.disabled = false;
   animate();
@@ -178,6 +195,16 @@ function resetAnimation() {
   render();
   statusEl.textContent = `0 / ${connections.length.toLocaleString()} linee`;
   btnPlay.disabled = false;
+}
+
+function zoomIn() {
+  zoomLevel = Math.min(MAX_ZOOM, zoomLevel * 1.4);
+  applyZoom();
+}
+
+function zoomOut() {
+  zoomLevel = Math.max(MIN_ZOOM, zoomLevel / 1.4);
+  applyZoom();
 }
 
 function startRecording() {
@@ -211,6 +238,19 @@ function stopRecording() {
 }
 
 document.getElementById("btnStart").addEventListener("click", () => {
+  // leggi le scelte narrative dallo splash
+  const speedSelect = document.getElementById("speedSelect");
+  const storySelect = document.getElementById("storySelect");
+  if (speedSelect) {
+    if (speedSelect.value === "slow") animationDurationMs = BASE_ANIMATION_DURATION_MS * 2;
+    else if (speedSelect.value === "fast") animationDurationMs = BASE_ANIMATION_DURATION_MS / 2;
+    else animationDurationMs = BASE_ANIMATION_DURATION_MS;
+  }
+  if (storySelect) {
+    storyMode = storySelect.value === "chronological" ? "chronological" : "random";
+    // ricostruisci le connessioni nel nuovo ordine narrativo
+    buildConnections();
+  }
   document.getElementById("title-slide").classList.add("hidden");
   document.body.classList.add("no-toolbar");
   if (connections.length > 0) {
@@ -225,6 +265,8 @@ btnRecord.addEventListener("click", () => {
   if (mediaRecorder && mediaRecorder.state === "recording") stopRecording();
   else startRecording();
 });
+if (btnZoomIn) btnZoomIn.addEventListener("click", zoomIn);
+if (btnZoomOut) btnZoomOut.addEventListener("click", zoomOut);
 
 async function init() {
   statusEl.textContent = "Caricamento testo...";
@@ -245,6 +287,7 @@ async function init() {
   canvas.style.width = CANVAS_WIDTH + "px";
   canvas.style.height = CANVAS_HEIGHT + "px";
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // sistema di coordinate in "pixel logici"
+  applyZoom();
   statusEl.textContent = "Layout parole...";
   const layoutResult = layoutWords(text);
   words = layoutResult.words;
@@ -288,6 +331,8 @@ async function init() {
   btnPause.disabled = true;
   btnReset.disabled = false;
   btnRecord.disabled = false;
+  if (btnZoomIn) btnZoomIn.disabled = false;
+  if (btnZoomOut) btnZoomOut.disabled = false;
 
   const btnStart = document.getElementById("btnStart");
   btnStart.disabled = false;
