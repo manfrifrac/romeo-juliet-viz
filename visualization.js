@@ -18,6 +18,7 @@ const LINE_OPACITY = 0.4;
 let words = [];
 let romeoPositions = [];
 let julietPositions = [];
+let loadedText = null; // per ricalcolare layout al resize (es. rotazione mobile)
 let connections = [];
 let animationIndex = 0;
 let animationRunning = false;
@@ -278,6 +279,14 @@ btnRecord.addEventListener("click", () => {
 if (btnZoomIn) btnZoomIn.addEventListener("click", zoomIn);
 if (btnZoomOut) btnZoomOut.addEventListener("click", zoomOut);
 
+function onResize() {
+  if (loadedText) {
+    requestAnimationFrame(() => runLayout(loadedText));
+  }
+}
+window.addEventListener("resize", onResize);
+window.addEventListener("orientationchange", () => setTimeout(onResize, 100));
+
 async function init() {
   statusEl.textContent = "Caricamento testo...";
   let text;
@@ -291,17 +300,29 @@ async function init() {
       "Errore: avvia un server locale (es. python -m http.server 8080) e apri http://localhost:8080";
     return;
   }
+  loadedText = text;
 
-  // usa sempre il viewport così su mobile non si stringe (container può essere 0 o sbagliato al primo paint)
+  // su mobile le dimensioni sono giuste dopo il layout: aspetta un frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      runLayout(text);
+    });
+  });
+}
+
+function runLayout(text) {
+  // larghezza: prendi il massimo tra tutte le sorgenti così su mobile non si stringe
   const toolbarHeight = 52;
-  const vw = window.visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth;
-  const vh = window.visualViewport?.height ?? window.innerHeight ?? document.documentElement.clientHeight;
-  canvasWidth = Math.max(280, Math.floor(vw));
-  canvasHeight = Math.max(400, Math.floor(vh - toolbarHeight));
-  // su schermi stretti (mobile) testo un po' più grande per leggibilità
+  const w1 = window.visualViewport?.width ?? 0;
+  const w2 = document.documentElement.clientWidth ?? 0;
+  const w3 = window.innerWidth ?? 0;
+  const h1 = (window.visualViewport?.height ?? 0) - toolbarHeight;
+  const h2 = (document.documentElement.clientHeight ?? 0) - toolbarHeight;
+  const h3 = (window.innerHeight ?? 0) - toolbarHeight;
+  canvasWidth = Math.max(280, w1, w2, w3);
+  canvasHeight = Math.max(400, h1, h2, h3);
   fontScale = Math.max(1, Math.min(1.4, 480 / canvasWidth));
 
-  // canvas ad alta definizione per evitare sfocatura su mobile
   dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   canvas.width = canvasWidth * dpr;
   canvas.height = canvasHeight * dpr;
@@ -323,7 +344,6 @@ async function init() {
       w.cy *= contentScale;
     });
   }
-  // centra il blocco di testo orizzontalmente (spazi uguali a destra e sinistra)
   let minX = Infinity;
   let maxX = -Infinity;
   words.forEach((w) => {
@@ -346,13 +366,11 @@ async function init() {
   buildConnections();
   statusEl.textContent = `${romeoPositions.length} Romeo, ${julietPositions.length} Juliet, ${connections.length.toLocaleString()} linee`;
 
-  // aggiorna il testo delle occorrenze nello splash (se presente)
   const countsEl = document.getElementById("countsText");
   if (countsEl) {
-    countsEl.textContent = `${romeoPositions.length} occurrences of “Romeo” and ${julietPositions.length} of “Juliet”.`;
+    countsEl.textContent = `${romeoPositions.length} occurrences of "Romeo" and ${julietPositions.length} of "Juliet".`;
   }
 
-  // applica lo zoom iniziale (1x) e disegna
   applyZoom();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   render();
