@@ -13,6 +13,9 @@
       min-height: 100vh;
       overflow-y: auto;
     }
+    body.no-toolbar #toolbar {
+      display: none;
+    }
     #toolbar {
       position: fixed;
       top: 0;
@@ -138,7 +141,7 @@
 <body>
   <div id="title-slide">
     <h1>Romeo and Juliet</h1>
-    <p>The red lines connect every Romeo with every Juliet in Shakespeare's play – the first with the last, the second with the second to last, and so on.</p>
+    <p>Inspired by Beetroot Design’s “Romeo &amp; Juliet” poster: hundreds of occurrences of “Romeo” and “Juliet” in Shakespeare’s play are brought together by a dense web of red lines.</p>
     <button class="btn-start" id="btnStart" disabled>Loading...</button>
   </div>
   <div id="toolbar">

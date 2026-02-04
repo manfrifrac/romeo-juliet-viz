@@ -87,11 +87,13 @@ function buildConnections() {
   connections = [];
   const n = romeoPositions.length;
   const m = julietPositions.length;
-  const count = Math.min(n, m);
-  for (let i = 0; i < count; i++) {
-    const from = romeoPositions[i];
-    const to = julietPositions[m - 1 - i];
-    connections.push({ from, to });
+  // collega OGNI Romeo con OGNI Juliet (prodotto cartesiano)
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      const from = romeoPositions[i];
+      const to = julietPositions[j];
+      connections.push({ from, to });
+    }
   }
   // ordine casuale di apparizione delle linee
   for (let i = connections.length - 1; i > 0; i--) {
@@ -111,7 +113,8 @@ function drawText() {
 function drawLines(upToIndex) {
   ctx.strokeStyle = LINE_COLOR;
   ctx.globalAlpha = LINE_OPACITY;
-  ctx.lineWidth = Math.max(0.3, 0.5 * contentScale);
+  // linee il più sottili possibile ma ancora visibili
+  ctx.lineWidth = Math.max(0.05, 0.15 * contentScale);
   for (let i = 0; i < Math.min(upToIndex, connections.length); i++) {
     const c = connections[i];
     ctx.beginPath();
@@ -209,6 +212,7 @@ function stopRecording() {
 
 document.getElementById("btnStart").addEventListener("click", () => {
   document.getElementById("title-slide").classList.add("hidden");
+  document.body.classList.add("no-toolbar");
   if (connections.length > 0) {
     startAnimation();
   }
@@ -250,6 +254,22 @@ async function init() {
       w.cy *= contentScale;
     });
   }
+  // centra il blocco di testo orizzontalmente (spazi uguali a destra e sinistra)
+  let minX = Infinity;
+  let maxX = -Infinity;
+  words.forEach((w) => {
+    if (w.x < minX) minX = w.x;
+    const right = w.x + w.width;
+    if (right > maxX) maxX = right;
+  });
+  if (isFinite(minX) && isFinite(maxX) && maxX > minX) {
+    const usedWidth = maxX - minX;
+    const offsetX = (CANVAS_WIDTH - usedWidth) / 2 - minX;
+    words.forEach((w) => {
+      w.x += offsetX;
+      w.cx += offsetX;
+    });
+  }
 
   romeoPositions = words.filter((w) => isRomeo(w.word)).map((w) => ({ cx: w.cx, cy: w.cy }));
   julietPositions = words.filter((w) => isJuliet(w.word)).map((w) => ({ cx: w.cx, cy: w.cy }));
@@ -266,7 +286,7 @@ async function init() {
 
   const btnStart = document.getElementById("btnStart");
   btnStart.disabled = false;
-  btnStart.textContent = "Avvia animazione";
+  btnStart.textContent = "Start animation";
 }
 
 init();
