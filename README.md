@@ -2,7 +2,7 @@
 
 Visualizzazione dell'opera di Shakespeare con linee rosse che collegano ogni "Romeo" con ogni "Juliet" – primo con ultimo, secondo con penultimo, e così via – ordine di apparizione casuale.
 
-**[Live su Vercel](https://romeo-juliet-viz.vercel.app)** (dopo il deploy)
+**[Live su Vercel](https://romeo-juliet-viz.vercel.app)** · **[GitHub](https://github.com/manfrifrac/romeo-juliet-viz)**
 
 ## Come usare
 
@@ -49,7 +49,7 @@ gh repo create romeo-juliet-viz --public --source=. --remote=origin --push
 
 ```powershell
 cd "c:\Users\utente\ROMEO book"
-git remote add origin https://github.com/TUO_USERNAME/romeo-juliet-viz.git
+git remote add origin https://github.com/manfrifrac/romeo-juliet-viz.git
 git push -u origin master
 ```
 
