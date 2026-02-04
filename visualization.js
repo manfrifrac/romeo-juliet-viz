@@ -238,8 +238,13 @@ async function init() {
     return;
   }
 
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT; // fissi 9:16 per video verticale
+  // canvas ad alta definizione per evitare sfocatura su mobile
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = CANVAS_WIDTH * dpr;
+  canvas.height = CANVAS_HEIGHT * dpr; // fissi 9:16 per video verticale
+  canvas.style.width = CANVAS_WIDTH + "px";
+  canvas.style.height = CANVAS_HEIGHT + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // sistema di coordinate in "pixel logici"
   statusEl.textContent = "Layout parole...";
   const layoutResult = layoutWords(text);
   words = layoutResult.words;
