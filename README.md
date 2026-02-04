@@ -34,10 +34,23 @@ Apri [http://localhost:8080](http://localhost:8080) nel browser.
 
 ## Push su GitHub
 
+**Opzione A – GitHub CLI**
+
 ```powershell
-gh auth login   # una tantum, se non sei loggato
+gh auth login   # una tantum: vai su github.com/login/device e inserisci il codice
 cd "c:\Users\utente\ROMEO book"
 gh repo create romeo-juliet-viz --public --source=. --remote=origin --push
+```
+
+**Opzione B – Manuale**
+
+1. Crea un nuovo repo su [github.com/new](https://github.com/new) (nome: `romeo-juliet-viz`, public)
+2. Esegui:
+
+```powershell
+cd "c:\Users\utente\ROMEO book"
+git remote add origin https://github.com/TUO_USERNAME/romeo-juliet-viz.git
+git push -u origin master
 ```
 
 ## Struttura
