@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Romeo e Giulietta – Visualizzazione</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #1a1a1a;
+      color: #eee;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    #toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      z-index: 100;
+    }
+    button {
+      padding: 8px 16px;
+      border: 1px solid #555;
+      background: #333;
+      color: #eee;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button:hover { background: #444; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.recording { background: #c00; border-color: #f00; }
+    #status {
+      font-size: 13px;
+      color: #aaa;
+      margin-left: auto;
+    }
+    #container {
+      position: fixed;
+      top: 52px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: auto;
+    }
+    #canvas-wrapper {
+      min-width: 100%;
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+    canvas {
+      display: block;
+      background: #fff;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    }
+    #title-slide {
+      position: fixed;
+      inset: 0;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      z-index: 200;
+      transition: opacity 0.6s ease;
+    }
+    #title-slide.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #title-slide h1 {
+      font-size: clamp(2rem, 8vw, 4rem);
+      font-weight: 300;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    #title-slide p {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: #999;
+      text-align: center;
+      max-width: 400px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    #title-slide .btn-start {
+      padding: 16px 48px;
+      font-size: 1.1rem;
+      background: #c00;
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #title-slide .btn-start:hover {
+      background: #e00;
+    }
+    #title-slide .btn-start:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+  </style>
+</head>
+<body>
+  <div id="title-slide">
+    <h1>Romeo e Giulietta</h1>
+    <p>Le linee rosse collegano ogni Romeo con ogni Giulietta nell'opera di Shakespeare – il primo con l'ultimo, il secondo con il penultimo, e così via.</p>
+    <button class="btn-start" id="btnStart" disabled>Caricamento...</button>
+  </div>
+  <div id="toolbar">
+    <button id="btnPlay" disabled>Play</button>
+    <button id="btnPause" disabled>Pause</button>
+    <button id="btnReset" disabled>Reset</button>
+    <button id="btnRecord" disabled>Registra video</button>
+    <span id="status">Caricamento...</span>
+  </div>
+  <div id="container">
+    <div id="canvas-wrapper">
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+  <script src="visualization.js"></script>
+</body>
+</html>
