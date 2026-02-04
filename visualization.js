@@ -3,9 +3,9 @@
  * Collega ogni istanza di "Romeo" con ogni istanza di "Juliet"
  */
 
-// 9:16 formato verticale telefono
-const CANVAS_WIDTH = 1080;
-const CANVAS_HEIGHT = 1920;
+// dimensioni adattate allo schermo in init()
+let canvasWidth = 1080;
+let canvasHeight = 1920;
 const BASE_ANIMATION_DURATION_MS = 15000; // durata standard 15 secondi
 const FONT_SIZE = 5;
 const LINE_HEIGHT = 7;
@@ -69,7 +69,7 @@ function tokenize(text) {
 function layoutWords(text) {
   const tokens = tokenize(text);
   const result = [];
-  const maxWidth = CANVAS_WIDTH - PADDING * 2;
+  const maxWidth = canvasWidth - PADDING * 2;
   let x = PADDING;
   let y = PADDING + LINE_HEIGHT;
   ctx.font = `${FONT_SIZE}px "Times New Roman", "Georgia", serif`;
@@ -144,7 +144,9 @@ function drawLines(upToIndex) {
 }
 
 function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
   drawText();
   drawLines(animationIndex);
 }
@@ -278,25 +280,33 @@ async function init() {
   try {
     const res = await fetch("romeo_and_juliet.txt");
     text = await res.text();
+    // togli la riga del titolo "Romeo and Juliet" dal testo
+    text = text.replace(/^\s*Romeo\s+and\s+Juliet\s*[\r\n]+/i, "");
   } catch (e) {
     statusEl.textContent =
       "Errore: avvia un server locale (es. python -m http.server 8080) e apri http://localhost:8080";
     return;
   }
 
+  // adatta il canvas alle dimensioni dello schermo
+  const container = document.getElementById("container");
+  if (container) {
+    canvasWidth = container.clientWidth;
+    canvasHeight = container.clientHeight;
+  }
   // canvas ad alta definizione per evitare sfocatura su mobile
   dpr = window.devicePixelRatio || 1;
-  canvas.width = CANVAS_WIDTH * dpr;
-  canvas.height = CANVAS_HEIGHT * dpr; // fissi 9:16 per video verticale
-  canvas.style.width = CANVAS_WIDTH + "px";
-  canvas.style.height = CANVAS_HEIGHT + "px";
+  canvas.width = canvasWidth * dpr;
+  canvas.height = canvasHeight * dpr;
+  canvas.style.width = canvasWidth + "px";
+  canvas.style.height = canvasHeight + "px";
   statusEl.textContent = "Layout parole...";
   const layoutResult = layoutWords(text);
   words = layoutResult.words;
   const contentHeight = layoutResult.maxY + PADDING;
   contentScale = 1;
-  if (contentHeight > CANVAS_HEIGHT) {
-    contentScale = CANVAS_HEIGHT / contentHeight;
+  if (contentHeight > canvasHeight) {
+    contentScale = canvasHeight / contentHeight;
     words.forEach((w) => {
       w.x *= contentScale;
       w.y *= contentScale;
@@ -314,7 +324,7 @@ async function init() {
   });
   if (isFinite(minX) && isFinite(maxX) && maxX > minX) {
     const usedWidth = maxX - minX;
-    const offsetX = (CANVAS_WIDTH - usedWidth) / 2 - minX;
+    const offsetX = (canvasWidth - usedWidth) / 2 - minX;
     words.forEach((w) => {
       w.x += offsetX;
       w.cx += offsetX;
